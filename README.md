@@ -110,3 +110,60 @@ static get styles() {
 - `shouldUpdate()` - controls whether an update should proceed.
 - `update()` - no need to call, reflects property values to attributes and calls `render()` to render DOM`
 - `render()` - uses lit-html to render the element template.
+
+### getting values from inside the shadowDOM
+
+```
+  get usernameInput() {
+    return this.shadowRoot.getElementById("usernameInput");
+  }
+
+  get username() {
+    // Use the input getter, and get the value property from the input element
+    return this.usernameInput.value;
+  }
+```
+
+- you wont be able to get values through regular queries since the elemnts are inside the shadow dom.
+- what you could do is replace `document` with `shadowRoot` when doing getElement or querySelector calls
+- if you wanna move out of the shadowDOM you could use `createRenderRoot()` and return `this`. this will move your render to the `"light" DOM` but `styles` and `slots` wont workd anymore.
+
+### reflecting attributes
+
+```
+  static get properties() {
+    return {
+      disabled: {
+        type: Boolean,
+        reflect: true
+        // you can also specify _how_ you want the attribute to be reflected:
+        // attribute: 'my-attribute'
+        // will reflect this property as 'my-attribute' on your element.
+      }
+    };
+  }
+```
+
+- I'm still unsure about `reflect` but I think it's allowing you to `reflect` changes in properties back to the attributes.
+
+### stop recreating elements on list update with repeat
+
+```
+  render() {
+    return html`
+      <div>
+        <button @click="${this.reorder}">Re-order items (random)</button>
+        ${repeat(
+          this.items, // the array of items
+          item => item.id, // the identify function
+          (item, i) =>
+            html`
+              <div>[${i}] Message ${item.id}: ${item.message}</div>
+            ` // the template for each item
+        )}
+      </div>
+    `;
+  }
+```
+
+- similar to how `react` does it, by assining keys to the elements that's in a list, `lit` knows what elements are going to be rendered agian based on the updated properties. use this instead of `filter, map, or reduce` when handling lists that gets additional elements or only updates a small set of elements.
