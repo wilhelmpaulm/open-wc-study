@@ -167,3 +167,31 @@ static get styles() {
 ```
 
 - similar to how `react` does it, by assining keys to the elements that's in a list, `lit` knows what elements are going to be rendered agian based on the updated properties. use this instead of `filter, map, or reduce` when handling lists that gets additional elements or only updates a small set of elements.
+
+### adding slots or "child elements" to a component
+
+#### parent
+
+```
+<div class="card-wrapper">
+    <slot name="title"></slot>
+    <slot name="details"></slot>
+    <slot></slot>
+</div>
+```
+
+### usage
+
+```
+<card-element>
+  <h1 slot="title">Hello universe</h1>
+  <p slot="details">This is some text</p>
+  <p>any other content</p>
+</card-element>
+
+```
+
+- `<slot name="slotName">` on the containing element
+- `<custome-element><p slot="slotName">asd</p></custom-element>` when using slots
+
+###
