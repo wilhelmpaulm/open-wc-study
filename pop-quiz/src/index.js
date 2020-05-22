@@ -13,18 +13,19 @@ class FetchingData extends LitElement {
   }
 
   firstUpdated() {
-    fetch('https://swapi.co/api/people/')
-      .then((r) => r.json())
-      .then((r) => {
-        this.response = r.results;
+    fetch('https://reqres.in/api/users?page=1')
+      .then(r => r.json())
+      .then(r => {
+        this.response = r.data;
       });
   }
 
   render() {
     const { response } = this;
     return html`
+      <h3>example list</h3>
       <ul>
-        ${response.map((item) => html` <li>${item.name}</li> `)}
+        ${response.map(item => html` <li>${item.first_name}</li> `)}
       </ul>
     `;
   }
